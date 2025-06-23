@@ -1,0 +1,10 @@
+# monitoring/grafana/provisioning/datasources/datasource.yml
+apiVersion: 1
+
+datasources:
+  - name: Prometheus # Name of the datasource in Grafana, referenced in dashboard.json
+    type: prometheus
+    url: http://prometheus:9090 # URL of the Prometheus service within the Docker network
+    access: proxy
+    isDefault: true # Make this the default datasource for new panels
+    editable: true

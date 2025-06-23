@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+
+  # Charge request service (entry point)
+  charge_request_service:
+    build: ./charge_request_service
+    ports:
+      - "5001:5000"
+    depends_on:
+      - load_balancer
+
+  # Load balancer (core logic)
+  load_balancer:
+    build: ./load_balancer
+    ports:
+      - "5002:5002"
+    environment:
+      - SUBSTATION_HOSTS=substation1,substation2,substation3
+    depends_on:
+      - substation1
+      - substation2
+      - substation3
+
+  # Substation replicas
+  substation1:
+    build: ./substation_service
+    ports:
+      - "6001:5001"
+
+  substation2:
+    build: ./substation_service
+    ports:
+      - "6002:5001"
+
+  substation3:
+    build: ./substation_service
+    ports:
+      - "6003:5001"
+
+  # Prometheus for metrics
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  # Load tester
+  load_tester:
+    build: ./load_tester
+    depends_on:
+      - charge_request_service

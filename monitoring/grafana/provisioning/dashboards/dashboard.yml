@@ -1,0 +1,12 @@
+# monitoring/grafana/provisioning/dashboards/dashboard.yml
+apiVersion: 1
+
+providers:
+  - name: 'Smart Grid Dashboards' # Name of the provider
+    orgId: 1
+    folder: '' # No specific folder, goes to general dashboards
+    type: file
+    disableDelete: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboards # Path inside the Grafana container where dashboard.json is mounted
