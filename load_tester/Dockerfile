@@ -6,4 +6,4 @@ COPY test.py .
 
 RUN pip install requests
 
-CMD ["python", "test.py"]
+CMD ["python", "test.p
